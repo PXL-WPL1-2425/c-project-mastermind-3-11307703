@@ -240,15 +240,18 @@ namespace Mastermind
             string highscoreEntry = $"{gameStates[currentPlayer].PlayerName} - {gameStates[currentPlayer].Attempts} pogingen - {gameStates[currentPlayer].Score}/100";
             AddHighscore(highscoreEntry);
 
-            MessageBox.Show($"Gefeliciteerd, {gameStates[currentPlayer].PlayerName}! Je hebt de code gekraakt in {gameStates[currentPlayer].Attempts} pogingen.",
-                            "Winnaar",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Information);
 
+            if (currentPlayer == gameStates.Count - 1)
+            {
+                highscoreMenu_Click(null, null);
+            }
             // Vraag een nieuwe spelernaam en reset het spel volledig
             if(currentPlayer < gameStates.Count - 1){
                 currentPlayer++;
+            MessageBox.Show($"Code is gekraakt in {gameStates[currentPlayer - 1].Attempts}  pogingen\n" +
+             $"Nu is speler {gameStates[currentPlayer].PlayerName} aan de beurt.", $"{gameStates[currentPlayer - 1].PlayerName}");
             }
+
             InitializeGame();
             // StartGame();
             StartCountDown();
@@ -400,15 +403,19 @@ namespace Mastermind
             string highscoreEntry = $"{gameStates[currentPlayer].PlayerName} - {gameStates[currentPlayer].Attempts} pogingen - {gameStates[currentPlayer].Score}/100";
             AddHighscore(highscoreEntry);
 
-            MessageBox.Show($"Helaas, {gameStates[currentPlayer].PlayerName}. Je hebt de code niet gekraakt. De correcte code was: {string.Join(", ", secretCode)}.",
-                            "Game Over",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Information);
 
             // Reset het spel volledig
             
+            if (currentPlayer == gameStates.Count - 1)
+            {
+                highscoreMenu_Click(null, null);
+            }
             if(currentPlayer < gameStates.Count - 1){
                 currentPlayer++;
+            MessageBox.Show($"You failed! De correcte code was: {string.Join(", ", secretCode)}.\nNu is speler {gameStates[currentPlayer].PlayerName} aan de beurt.",
+                            $"{gameStates[currentPlayer-1].PlayerName}",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
             }
             InitializeGame();
             // StartGame(); // Vraag een nieuwe naam
