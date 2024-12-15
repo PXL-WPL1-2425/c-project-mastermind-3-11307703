@@ -16,7 +16,7 @@
                 <MenuItem Header="Bestand">
                     <MenuItem Header="Nieuw spel" Name="nieuwSpelMenu" Click="NewGameMenu_Click"  />
                     <MenuItem Header="Highscores" Name="highscoreMenu" Click="highscoreMenu_Click" />
-                    <MenuItem Header="Afsluiten" Name="closeMenu" />
+                    <MenuItem Header="Afsluiten" Name="closeMenu" Click="closeMenu_Click"/>
                 </MenuItem>
                 <MenuItem Header="Instellingen">
                     <MenuItem Header="Aantal pogingen" Name="attemptsMenu"/>
@@ -24,15 +24,10 @@
             </Menu>
         </DockPanel>
         <Grid>
-            <UniformGrid Rows="4" Columns="4" Margin="5">
-                <Ellipse x:Name="kleur1" Fill="Red" Height="50" Width="50" StrokeThickness="3" MouseDown="kleur_MouseDown" />
-                <Ellipse x:Name="kleur2" Fill="Red" Height="50" Width="50" StrokeThickness="3" MouseDown="kleur_MouseDown" />
-                <Ellipse x:Name="kleur3" Fill="Red" Height="50" Width="50"  StrokeThickness="3" MouseDown="kleur_MouseDown" />
-                <Ellipse x:Name="kleur4" Fill="Red" Height="50" Width="50" StrokeThickness="3" MouseDown="kleur_MouseDown" />
-
+            <UniformGrid Name="options" Rows="4" Columns="4" Margin="5">
             </UniformGrid>
             <Button x:Name="ControlButton" Content="Poging" Height="40" Width="150"  Background="#832B00" FontSize="16" FontFamily="Nirmala UI Semilight" Click="ControlButton_Click"  />
-            <TextBox x:Name="cheatCode" Width="180" Height="48"  Visibility="Hidden" HorizontalAlignment="Left" MouseDown="kleur_MouseDown"/>
+            <TextBox x:Name="cheatCode" Width="220" Height="48"  Visibility="Hidden" HorizontalAlignment="Left" MouseDown="kleur_MouseDown" Margin="0,100,0,0"/>
             <Label x:Name="timerCounter" Width="50" Height="48" HorizontalAlignment="Right" Background="WhiteSmoke"/>
             <Button x:Name="buyHintButton" Content="Koop hint" FontStyle="Italic" Background="Green" Width="60" Height="48" HorizontalAlignment="Right" Margin="0,2,53,0" Click="buyHintButton_Click"/>
             <Label x:Name="scoreLabel" Width="200" Height="70" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="GhostWhite"/>
