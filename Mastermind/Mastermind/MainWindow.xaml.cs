@@ -149,17 +149,12 @@ namespace Mastermind
         private void InitializeGame()
         {
             ClearAllChildrenRecursively(historyPanel);
-            //historyPanel.Children.Clear(); // Verwijder alle vorige pogingen
             ResetAllColors();
 
-            // Reset interne spelvariabelen
-            // totalScore = 100;
-            // attempts = 0;
-            // countDown = 10;
-
+         
 
             // Update labels
-            scoreLabel.Content = $"Score: {gameStates[currentPlayer].Score}";
+            scoreLabel.Content = $"Speler: {gameStates[currentPlayer].PlayerName}\nScore: {gameStates[currentPlayer].Score}\nPoging: {gameStates[currentPlayer].Attempts}";
 
 
             // Genereer een nieuwe geheime code
@@ -290,6 +285,8 @@ namespace Mastermind
             historyPanel.Children.Add(attemptPanel);
         }
 
+        
+
         private void UpdateScoreLabel(string[] selectedColors)
         {
             int scorePenalty = 0;
@@ -313,7 +310,7 @@ namespace Mastermind
             gameStates[currentPlayer].Score -= scorePenalty;
             if (gameStates[currentPlayer].Score < 0) gameStates[currentPlayer].Score = 0; 
 
-            scoreLabel.Content = $"Score: {gameStates[currentPlayer].Score}";
+            scoreLabel.Content = $"Speler: {gameStates[currentPlayer].PlayerName}\nScore: {gameStates[currentPlayer].Score}\nPoging: {gameStates[currentPlayer].Attempts}";
         }
 
         private Brush GetFeedbackBorder(string color, int index)
