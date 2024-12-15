@@ -285,9 +285,8 @@ namespace Mastermind
             historyPanel.Children.Add(attemptPanel);
         }
 
-        
 
-        private void UpdateScoreLabel(string[] selectedColors)
+    private void UpdateScoreLabel(string[] selectedColors)
         {
             int scorePenalty = 0;
 
@@ -473,6 +472,70 @@ namespace Mastermind
             MessageBox.Show("Highscores:\n" + GetHighscores(), "Highscores", MessageBoxButton.OK, MessageBoxImage.Information);
 
         }
-       
+
+        private void HandleCorrectColorHint()
+        {
+
+            // Speler heeft niet genoeg punten om een hint te kopen
+            if (gameStates[currentPlayer].Score < 14) {
+                MessageBox.Show("Je hebt geen punten om een hint te kopen");    
+                return;
+            }
+
+            Random rnd = new Random();
+            int randomIndex = rnd.Next(0, secretCode.Length - 1);
+            
+            MessageBox.Show($"Juiste kleur: {secretCode[randomIndex]}");
+            gameStates[currentPlayer].Score -= 15; // Strafpunten
+        }
+
+        private void HandleCorrectColorAndPositionHint()
+        {
+
+            // Speler heeft niet genoeg punten om een hint te kopen
+            if (gameStates[currentPlayer].Score < 24) {
+                MessageBox.Show("Je hebt geen punten om een hint te kopen");   
+                return; 
+            }
+
+            Random rnd = new Random();
+            int randomIndex = rnd.Next(0, secretCode.Length - 1);
+
+            MessageBox.Show($"Juiste kleur: {secretCode[randomIndex]} en positie: {randomIndex + 1}");
+            gameStates[currentPlayer].Score -= 25; // Strafpunten
+        }
+
+        private void buyHintButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            MessageBoxResult result = MessageBox.Show(
+        "Wil je een hint kopen?\n\n" +
+        "Kies Ja voor een juiste kleur (-15 punten)\n" +
+        "Kies Nee voor een juiste kleur op de juiste plaats (-25 punten)",
+        "Hint Kopen",
+        MessageBoxButton.YesNoCancel,
+        MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                // Geef een juiste kleur als hint
+                HandleCorrectColorHint();           
+                scoreLabel.Content = $"Speler: {gameStates[currentPlayer].PlayerName}\nScore: {gameStates[currentPlayer].Score}\nPoging: {gameStates[currentPlayer].Attempts}";     
+            }
+            else if (result == MessageBoxResult.No)
+            {
+                // Geef een juiste kleur op de juiste plaats als hint
+                HandleCorrectColorAndPositionHint();              
+                scoreLabel.Content = $"Speler: {gameStates[currentPlayer].PlayerName}\nScore: {gameStates[currentPlayer].Score}\nPoging: {gameStates[currentPlayer].Attempts}";
+            }
+            else
+            {
+                // Annuleer hint kopen
+                return;
+            }
+
+           
+
+        }
     }
 }

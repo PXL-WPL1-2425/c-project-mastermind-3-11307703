@@ -34,6 +34,7 @@
             <Button x:Name="ControlButton" Content="Poging" Height="40" Width="150"  Background="#832B00" FontSize="16" FontFamily="Nirmala UI Semilight" Click="ControlButton_Click"  />
             <TextBox x:Name="cheatCode" Width="180" Height="48"  Visibility="Hidden" HorizontalAlignment="Left" MouseDown="kleur_MouseDown"/>
             <Label x:Name="timerCounter" Width="50" Height="48" HorizontalAlignment="Right" Background="WhiteSmoke"/>
+            <Button x:Name="buyHintButton" Content="Koop hint" FontStyle="Italic" Background="Green" Width="60" Height="48" HorizontalAlignment="Right" Margin="0,2,53,0" Click="buyHintButton_Click"/>
             <Label x:Name="scoreLabel" Width="200" Height="70" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="GhostWhite"/>
         </Grid>
         <StackPanel x:Name="historyPanel" HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="790" Height="765" />
