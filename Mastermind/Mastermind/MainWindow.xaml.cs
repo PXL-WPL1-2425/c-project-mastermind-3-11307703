@@ -19,6 +19,8 @@ namespace Mastermind
         public int Attempts { get; set; }
         public int Score { get; set; }
         public int NumberOfColors { get; set; }
+        public int NumberOfColorHintsUsed { get; set; }
+        public int NumberOfColorPositionHintsUsed { get; set; }
     };
 
     public partial class MainWindow : Window
@@ -28,11 +30,7 @@ namespace Mastermind
         private string[] secretCode;
         private List<Brush> ellipseColor = new List<Brush> { Brushes.Red, Brushes.Yellow, Brushes.Orange, Brushes.White, Brushes.Green, Brushes.Blue };
         private string[] _highscores = new string[15];
-        // int attempts = 0;
         int countDown = 10;
-        // int totalScore = 100;
-        // private int _maxAttempts = 10;
-        // private string currentPlayerName = string.Empty;
         private List<StackPanel> attemptPanels;
         private List<GameState> gameStates;
         private int currentPlayer;
@@ -57,7 +55,7 @@ namespace Mastermind
             {
                 GameState playerGameState = new GameState();
 
-                // Get player name
+                // Haal speler naam op
                 string playerName = string.Empty;
                 while (string.IsNullOrWhiteSpace(playerName))
                 {
@@ -68,7 +66,7 @@ namespace Mastermind
                     }
                 }
 
-                // Get player number of attempts
+                // Haal speler pogingen op
                 int attemptsInput = 0;
                 bool validInput = false;
                 while (!validInput)
@@ -99,6 +97,8 @@ namespace Mastermind
                     }
                 }
 
+                playerGameState.NumberOfColorHintsUsed = 0;
+                playerGameState.NumberOfColorPositionHintsUsed = 0;
                 playerGameState.NumberOfColors = colorsInput;
                 playerGameState.PlayerName = playerName;
                 playerGameState.MaxAttempts = attemptsInput;
@@ -117,13 +117,13 @@ namespace Mastermind
 
             MessageBox.Show($"Welkom, {gameStates[currentPlayer].PlayerName}! Je speelt met maximaal {gameStates[currentPlayer].MaxAttempts} pogingen. Veel succes!", "Welkom", MessageBoxButton.OK);
 
-            InitializeGame(); // Reset de speltoestand volledig
+            InitializeGame(); // Reset de speltoestand 
         }
 
         private void NewGameMenu_Click(object sender, RoutedEventArgs e)
         {
 
-            InitializeGame(); // Reset de speltoestand volledig
+            InitializeGame(); // Reset de speltoestand 
             StartGame(); // Vraag een nieuwe spelernaam
             MessageBox.Show($"Nieuw spel gestart voor speler: {gameStates[currentPlayer].PlayerName}", "Nieuw Spel");
             StartCountDown();
@@ -152,7 +152,7 @@ namespace Mastermind
             {
                 gameStates[currentPlayer].Attempts++;
                 timer.Stop();
-                if (gameStates[currentPlayer].Attempts >= gameStates[currentPlayer].MaxAttempts) // Gebruik de dynamische waarde
+                if (gameStates[currentPlayer].Attempts >= gameStates[currentPlayer].MaxAttempts) 
                 {
                     GameOver();
                     return;
@@ -168,7 +168,9 @@ namespace Mastermind
             colorOptions = new List<Ellipse>();
             ClearAllChildrenRecursively(historyPanel);
             ClearAllChildrenRecursively(options);
+            ClearAllChildrenRecursively(status);
             CreateColorOptions();
+            HandleRenderStatus();
 
             // Update labels
             scoreLabel.Content = $"Speler: {gameStates[currentPlayer].PlayerName}\nScore: {gameStates[currentPlayer].Score}\nPoging: {gameStates[currentPlayer].Attempts}";
@@ -190,7 +192,6 @@ namespace Mastermind
             }
             countDown = 10;
             timerCounter.Content = $"{countDown}";
-            // Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Render, new Action(() => { }));
             UpdateTitle();
         }
 
@@ -199,10 +200,9 @@ namespace Mastermind
             // Controleer of het spel al opnieuw is gestart
             if (gameStates[currentPlayer].Attempts >= gameStates[currentPlayer].MaxAttempts)
             {
-                return; // Stop als het spel over is
+                return; // Spel stopt als conditie voldaan is
             }
 
-            // List<Ellipse> ellipses = new List<Ellipse> { kleur1, kleur2, kleur3, kleur4 };
             string[] selectedColors = colorOptions.Select(e => GetColorName(e.Fill)).ToArray();
 
             if (selectedColors.Any(color => color == "Transparent"))
@@ -231,7 +231,7 @@ namespace Mastermind
         {
             int correctPosition = 0;
 
-            // Controleer correcte posities (kleur én positie)
+            // Check correcte posities (kleur én positie)
             for (int i = 0; i < gameStates[currentPlayer].NumberOfColors; i++)
             {
                 if (selectedColors[i] == secretCode[i])
@@ -243,7 +243,7 @@ namespace Mastermind
             // Controleer of de speler gewonnen heeft
             if (correctPosition == gameStates[currentPlayer].NumberOfColors)
             {
-                HandleWin(); // Voer de winactie uit
+                HandleWin(); 
             }
         }
 
@@ -259,7 +259,7 @@ namespace Mastermind
                 highscoreMenu_Click(null, null);
                 return;
             }
-            // Vraag een nieuwe spelernaam en reset het spel volledig
+            // Vraag een nieuwe spelernaam + reset spel volledig
             if (currentPlayer < gameStates.Count - 1)
             {
                 currentPlayer++;
@@ -268,7 +268,34 @@ namespace Mastermind
             }
 
             InitializeGame();
-            // StartGame();
+            StartCountDown();
+        }
+
+        private void GameOver()
+        {
+
+            timer.Stop();
+            string highscoreEntry = $"{gameStates[currentPlayer].PlayerName} - {gameStates[currentPlayer].Attempts} pogingen - {gameStates[currentPlayer].Score}/100";
+            AddHighscore(highscoreEntry);
+
+
+            // Reset spel 
+            
+            if (currentPlayer == gameStates.Count - 1)
+            {
+                highscoreMenu_Click(null, null);
+                return;
+            }
+            if (currentPlayer < gameStates.Count - 1)
+            {
+                currentPlayer++;
+                MessageBox.Show($"You failed! De correcte code was: {string.Join(", ", secretCode)}.\nNu is speler {gameStates[currentPlayer].PlayerName} aan de beurt.",
+                            $"{gameStates[currentPlayer - 1].PlayerName}",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+            }
+
+            InitializeGame();
             StartCountDown();
         }
 
@@ -371,7 +398,6 @@ namespace Mastermind
 
         private void CreateColorOptions()
         {
-            // List<Ellipse> ellipses = new List<Ellipse> { kleur1, kleur2, kleur3, kleur4 };
 
             for (int i = 0; i < gameStates[currentPlayer].NumberOfColors; i++)
             {
@@ -387,10 +413,6 @@ namespace Mastermind
                 options.Children.Add(colorOption);
             }
 
-            // foreach (Ellipse ellipse in ellipses)
-            //     ellipse.Fill = Brushes.Red; // Zet de standaardkleur terug
-            //     ellipse.Stroke = Brushes.Transparent; // Verwijder feedback-kleur
-            // }
 
         }
 
@@ -473,37 +495,12 @@ namespace Mastermind
                 }
             }
 
-            // Als de lijst vol is, overschrijft de oudste score (FIFO)
+            // Als de lijst vol is, overschrijft de oudste score
             for (int i = 0; i < _highscores.Length - 1; i++)
             {
                 _highscores[i] = _highscores[i + 1];
             }
             _highscores[_highscores.Length - 1] = highscoreEntry;
-        }
-
-        private void GameOver()
-        {
-
-            timer.Stop();
-            string highscoreEntry = $"{gameStates[currentPlayer].PlayerName} - {gameStates[currentPlayer].Attempts} pogingen - {gameStates[currentPlayer].Score}/100";
-            AddHighscore(highscoreEntry);
-
-
-            // Reset het spel volledig
-
-            if (currentPlayer == gameStates.Count - 1)
-            {
-                highscoreMenu_Click(null, null);
-                return;
-
-
-            }
-
-            Random rnd = new Random();
-            int randomIndex = rnd.Next(0, secretCode.Length - 1);
-
-            MessageBox.Show($"Juiste kleur: {secretCode[randomIndex]}");
-            gameStates[currentPlayer].Score -= 15; // Strafpunten
         }
 
         private void HandleCorrectColorHint()
@@ -520,7 +517,8 @@ namespace Mastermind
             int randomIndex = rnd.Next(0, secretCode.Length - 1);
 
             MessageBox.Show($"Juiste kleur: {secretCode[randomIndex]}");
-            gameStates[currentPlayer].Score -= 15; // Strafpunten
+            gameStates[currentPlayer].Score -= 15; 
+            gameStates[currentPlayer].NumberOfColorHintsUsed++;
         }
 
         private void HandleCorrectColorAndPositionHint()
@@ -537,7 +535,8 @@ namespace Mastermind
             int randomIndex = rnd.Next(0, secretCode.Length - 1);
 
             MessageBox.Show($"Juiste kleur: {secretCode[randomIndex]} en positie: {randomIndex + 1}");
-            gameStates[currentPlayer].Score -= 25; // Strafpunten
+            gameStates[currentPlayer].Score -= 25; 
+            gameStates[currentPlayer].NumberOfColorPositionHintsUsed++;
         }
 
         private void buyHintButton_Click(object sender, RoutedEventArgs e)
@@ -568,9 +567,25 @@ namespace Mastermind
                 // Annuleer hint kopen
                 return;
             }
+        }
 
+        private void HandleRenderStatus()
+        {
+            for(int i = 0; i < gameStates.Count; i++)
+            {
+                Label playerLabel = new Label
+                {
+                    Content = $"Name: {gameStates[i].PlayerName}\n Attempts: {gameStates[i].Attempts}\n Number of Color Hints: {gameStates[i].NumberOfColorHintsUsed}\n Number of Color Position Hints: {gameStates[i].NumberOfColorPositionHintsUsed}\n Score: {gameStates[i].Score}",
+                    Background = Brushes.White,
+                };
 
+                if(currentPlayer == i)
+                {
+                    playerLabel.Background = Brushes.Green;
+                }
 
+                status.Children.Add(playerLabel);
+            }
         }
 
         private void closeMenu_Click(object sender, RoutedEventArgs e)

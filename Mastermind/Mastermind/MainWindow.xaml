@@ -32,7 +32,9 @@
             <Button x:Name="buyHintButton" Content="Koop hint" FontStyle="Italic" Background="Green" Width="60" Height="48" HorizontalAlignment="Right" Margin="0,2,53,0" Click="buyHintButton_Click"/>
             <Label x:Name="scoreLabel" Width="200" Height="70" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="GhostWhite"/>
         </Grid>
-        <StackPanel x:Name="historyPanel" HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="790" Height="765" />
+        <StackPanel x:Name="historyPanel" HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="790" Height="600" />
+        <StackPanel x:Name="status" Width="795" Height="200" Margin="0,10,0,0" Orientation="Horizontal"/>
     </StackPanel>
+    
 </Window>
 
