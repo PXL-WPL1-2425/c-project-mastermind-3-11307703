@@ -580,11 +580,5 @@ namespace Mastermind
 
     }
 }
-        }
+        
 
-    }
-}
-        }
-
-    }
-}
