@@ -98,7 +98,7 @@ namespace Mastermind
             
 
 
-            MessageBox.Show($"Welkom, {gameStates[currentPlayer].PlayerName}! Je speelt met maximaal {gameStates[currentPlayer].Attempts} pogingen. Veel succes!", "Welkom", MessageBoxButton.OK);
+            MessageBox.Show($"Welkom, {gameStates[currentPlayer].PlayerName}! Je speelt met maximaal {gameStates[currentPlayer].MaxAttempts} pogingen. Veel succes!", "Welkom", MessageBoxButton.OK);
 
             InitializeGame(); // Reset de speltoestand volledig
         }
@@ -277,7 +277,8 @@ namespace Mastermind
                     Height = 50,
                     Fill = GetBrushFromColorName(selectedColors[i]),
                     StrokeThickness = 5,
-                    Stroke = GetFeedbackBorder(selectedColors[i], i)
+                    Stroke = GetFeedbackBorder(selectedColors[i], i),
+                    ToolTip = "witte rand: Juiste kleur, foute positie\n rode rand: Juiste kleur, juiste positie\n geen kleur: Foute kleur"
                 };
                 attemptPanel.Children.Add(colorBox);
             }
